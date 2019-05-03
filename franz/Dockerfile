@@ -1,6 +1,6 @@
 FROM itatabitovski/debian:jessie
 
-ENV FRANZ_VERSION 4.0.4
+ENV FRANZ_VERSION 5.0.0-beta.15
 
 RUN apt-install wget \
                 libgtk2.0-0 \
@@ -9,10 +9,18 @@ RUN apt-install wget \
                 libgconf-2-4 \
                 libnss3 \
                 libasound2 \
-                alsa-utils && \
-	mkdir /opt/franz && cd /opt/franz && \
-	wget https://github.com/meetfranz/franz-app/releases/download/$FRANZ_VERSION/Franz-linux-x64-$FRANZ_VERSION.tgz && \
-	tar xf Franz*.tgz && rm Franz*.tgz
+                alsa-utils
+
+#RUN add-apt-repository ppa:ubuntu-toolchain-r/test
+RUN apt-get update && apt-get upgrade
+
+RUN	mkdir /opt/franz && cd /opt/franz && \
+        apt-get update && \
+	wget https://github.com/meetfranz/franz/releases/download/v$FRANZ_VERSION/franz-$FRANZ_VERSION.deb
+RUN     apt-get upgrade -y
+RUN     apt-get install franz-$FRANZ_VERION.deb
+
+
 
 COPY entrypoint.sh /entrypoint.sh
 
